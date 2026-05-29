@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DeepSeek 本地客户端</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <button class="new-chat-btn" id="newChatBtn" type="button">＋ 新对话</button>
+      </div>
+      <div class="conversation-list" id="conversationList"></div>
+      <div class="sidebar-footer">
+        <span>DeepSeek 本地客户端</span>
+        <button class="ghost-btn" id="settingsBtn" type="button">设置</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="top-bar">
+        <div class="model-selector">
+          <button class="sidebar-toggle" id="sidebarToggle" type="button" title="展开侧边栏">☰</button>
+          <select id="modelSelect" aria-label="选择模型">
+            <option value="deepseek-v4-flash">DeepSeek V4 Flash</option>
+            <option value="deepseek-v4-pro">DeepSeek V4 Pro</option>
+          </select>
+          <span class="model-badge" id="modelBadge">Flash</span>
+        </div>
+        <button class="ghost-btn" id="clearBtn" type="button">清空</button>
+      </header>
+
+      <section class="chat-area" id="chatArea">
+        <div class="messages-container" id="messagesContainer"></div>
+      </section>
+
+      <footer class="input-area">
+        <div class="input-wrapper">
+          <div class="input-box">
+            <textarea id="userInput" rows="1" placeholder="输入你的问题..." disabled></textarea>
+            <button class="send-btn" id="sendBtn" type="button" disabled title="发送">
+              <span id="sendIcon">➤</span>
+            </button>
+          </div>
+          <div class="input-hint">Enter 发送，Ctrl+Enter 换行</div>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal">
+      <h2>API 配置</h2>
+      <p id="dataPathText">配置和会话会保存在软件目录的 data 文件夹中。</p>
+      <label for="apiKeyInput">DeepSeek API 密钥</label>
+      <input id="apiKeyInput" type="password" placeholder="sk-..." autocomplete="off">
+      <label for="apiBaseInput">API 基础地址</label>
+      <input id="apiBaseInput" type="text" placeholder="https://api.deepseek.com">
+      <div class="settings-status" id="settingsStatus"></div>
+      <div class="modal-actions">
+        <button class="secondary-btn" id="cancelSettingsBtn" type="button">取消</button>
+        <button class="primary-btn" id="saveSettingsBtn" type="button">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="./renderer.js"></script>
+</body>
+</html>
