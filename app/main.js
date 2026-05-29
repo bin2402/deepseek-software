@@ -2,7 +2,15 @@ const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const fs = require("fs");
 
-const baseDir = app.isPackaged ? path.dirname(process.execPath) : path.resolve(__dirname, "..");
+function getBaseDir() {
+  if (!app.isPackaged) {
+    return path.resolve(__dirname, "..");
+  }
+
+  return process.env.PORTABLE_EXECUTABLE_DIR || path.dirname(process.execPath);
+}
+
+const baseDir = getBaseDir();
 const dataDir = path.join(baseDir, "data");
 const settingsPath = path.join(dataDir, "settings.json");
 const conversationsPath = path.join(dataDir, "conversations.json");
