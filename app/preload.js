@@ -12,6 +12,8 @@ contextBridge.exposeInMainWorld("deepseekApp", {
   saveSettings: (settings) => ipcRenderer.invoke("settings:save", settings),
   getConversations: () => ipcRenderer.invoke("conversations:get"),
   saveConversations: (data) => ipcRenderer.invoke("conversations:save", data),
+  selectAndExtractFiles: () => ipcRenderer.invoke("files:select-and-extract"),
+  searchWeb: (query) => ipcRenderer.invoke("search:web", query),
   streamChat: (payload) => ipcRenderer.invoke("chat:stream", payload),
   abortChat: (requestId) => ipcRenderer.invoke("chat:abort", requestId),
   onChatChunk: (callback) => on("chat:chunk", callback),

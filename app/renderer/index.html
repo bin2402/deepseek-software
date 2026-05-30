@@ -39,13 +39,19 @@
 
       <footer class="input-area">
         <div class="input-wrapper">
+          <div class="attachment-tray" id="attachmentTray"></div>
+          <div class="input-toolbar">
+            <button class="tool-btn" id="attachBtn" type="button" title="上传 Word、PDF、代码或文本文件">📎 上传文件</button>
+            <button class="tool-btn search-toggle" id="searchToggleBtn" type="button" aria-pressed="false" title="本次提问开启联网搜索">🌐 联网搜索</button>
+            <span class="toolbar-status" id="toolbarStatus"></span>
+          </div>
           <div class="input-box">
-            <textarea id="userInput" rows="1" placeholder="输入你的问题..." disabled></textarea>
+            <textarea id="userInput" rows="1" placeholder="输入你的问题，可上传文件或开启联网搜索..." disabled></textarea>
             <button class="send-btn" id="sendBtn" type="button" disabled title="发送">
-              <span id="sendIcon">➤</span>
+              <span id="sendIcon">发送</span>
             </button>
           </div>
-          <div class="input-hint">Enter 发送，Ctrl+Enter 换行</div>
+          <div class="input-hint">Enter 发送，Ctrl+Enter 换行。单次最多上传 5 个文件，支持 docx、pdf、md、txt、py 等。</div>
         </div>
       </footer>
     </main>
