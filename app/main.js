@@ -14,6 +14,8 @@ const SEARCH_RESULT_LIMIT = 5;
 const SEARCH_TIMEOUT_MS = 10000;
 const FETCH_TIMEOUT_MS = 6000;
 
+const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"]);
+
 const TEXT_EXTENSIONS = new Set([
   ".txt",
   ".md",
@@ -52,6 +54,7 @@ const baseDir = getBaseDir();
 const dataDir = path.join(baseDir, "data");
 const settingsPath = path.join(dataDir, "settings.json");
 const conversationsPath = path.join(dataDir, "conversations.json");
+const backgroundsDir = path.join(baseDir, "backgrounds");
 const controllers = new Map();
 
 const defaultSettings = {
@@ -260,13 +263,27 @@ function formatBytes(bytes) {
   return `${size.toFixed(unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
 }
 
+function getRandomBackground() {
+  try {
+    if (!fs.existsSync(backgroundsDir)) return null;
+    const files = fs.readdirSync(backgroundsDir).filter((f) => IMAGE_EXTENSIONS.has(path.extname(f).toLowerCase()));
+    if (files.length === 0) return null;
+    const chosen = files[Math.floor(Math.random() * files.length)];
+    const buffer = fs.readFileSync(path.join(backgroundsDir, chosen));
+    const mime = chosen.endsWith(".png") ? "image/png" : chosen.endsWith(".gif") ? "image/gif" : chosen.endsWith(".webp") ? "image/webp" : "image/jpeg";
+    return `data:${mime};base64,${buffer.toString("base64")}`;
+  } catch {
+    return null;
+  }
+}
+
 function createWindow() {
   const window = new BrowserWindow({
     width: 1220,
     height: 820,
     minWidth: 920,
     minHeight: 620,
-    title: "DeepSeek 本地客户端",
+    title: "✿ DeepSeek 酱",
     backgroundColor: "#ffffff",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -469,6 +486,8 @@ app.on("window-all-closed", () => {
 });
 
 ipcMain.handle("app:get-data-dir", () => dataDir);
+
+ipcMain.handle("app:get-background", () => getRandomBackground());
 
 ipcMain.handle("settings:get", () => {
   const settings = sanitizeSettings(readJson(settingsPath, defaultSettings));

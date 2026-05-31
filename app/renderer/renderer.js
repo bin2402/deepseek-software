@@ -206,14 +206,14 @@ function renderMessages() {
   if (!conversation || conversation.messages.length === 0) {
     dom.messagesContainer.innerHTML = `
       <div class="welcome">
-        <div class="welcome-icon">🤖</div>
-        <h1>DeepSeek 本地客户端</h1>
-        <p>可以聊天、识别文件，也可以开启联网搜索整合网页内容。</p>
+        <div class="welcome-icon">🌸</div>
+        <h1>DeepSeek 酱</h1>
+        <p>可以聊天、识别文件，也可以开启联网搜索整合网页内容哦~</p>
         <div class="suggestions">
-          <button class="suggestion" type="button" data-suggestion="帮我总结上传文件的重点">总结文件重点</button>
-          <button class="suggestion" type="button" data-suggestion="联网搜索 DeepSeek V4 的最新信息并总结">联网搜索最新信息</button>
-          <button class="suggestion" type="button" data-suggestion="写一个 Python 排序函数">写 Python 代码</button>
-          <button class="suggestion" type="button" data-suggestion="帮我规划周末旅行">规划周末旅行</button>
+          <button class="suggestion" type="button" data-suggestion="帮我总结上传文件的重点">📝 总结文件重点</button>
+          <button class="suggestion" type="button" data-suggestion="联网搜索 DeepSeek V4 的最新信息并总结">🌐 联网搜索最新信息</button>
+          <button class="suggestion" type="button" data-suggestion="写一个 Python 排序函数">💻 写 Python 代码</button>
+          <button class="suggestion" type="button" data-suggestion="帮我规划周末旅行">✈️ 规划周末旅行</button>
         </div>
       </div>
     `;
@@ -235,7 +235,7 @@ function renderMessages() {
 
 function renderMessage(message) {
   const role = message.role === "user" ? "user" : "assistant";
-  const avatar = role === "user" ? "你" : "AI";
+  const avatar = role === "user" ? "🧑" : "🌸";
   const streamingClass = message.streaming ? " streaming" : "";
   const reasoning = message.reasoning
     ? `<div class="thinking">
@@ -283,7 +283,7 @@ function updateControls() {
   dom.sendBtn.disabled = !hasApiKey || (state.streaming && !state.activeRequestId);
   dom.attachBtn.disabled = !hasApiKey || state.streaming;
   dom.searchToggleBtn.disabled = !hasApiKey || state.streaming;
-  dom.userInput.placeholder = hasApiKey ? "输入你的问题，可上传文件或开启联网搜索..." : "请先设置 API 密钥...";
+  dom.userInput.placeholder = hasApiKey ? "输入你的问题，可上传文件或开启联网搜索~" : "请先设置 API 密钥...";
   dom.modelSelect.value = normalizeModel(state.settings.model);
   dom.modelBadge.textContent = MODELS[normalizeModel(state.settings.model)];
   dom.searchToggleBtn.classList.toggle("active", state.searchEnabled);
@@ -569,7 +569,31 @@ function appendStreamChunk(payload) {
 
   assistantMessage.content += payload.content || "";
   assistantMessage.reasoning += payload.reasoning || "";
-  renderMessages();
+
+  if (state.currentId !== state.activeConversationId || currentConversation()?.id !== conversation.id) {
+    return;
+  }
+
+  const streamingBubbles = dom.messagesContainer.querySelectorAll(".message.assistant .bubble.streaming");
+  const bubble = streamingBubbles[streamingBubbles.length - 1];
+  if (!bubble) {
+    renderMessages();
+    return;
+  }
+
+  const reasoningHtml = assistantMessage.reasoning
+    ? `<div class="thinking">
+        <div class="thinking-header">推理过程</div>
+        <div class="thinking-body">${renderMarkdown(assistantMessage.reasoning)}</div>
+      </div>`
+    : "";
+  bubble.innerHTML = reasoningHtml + renderMarkdown(assistantMessage.content);
+
+  bubble.querySelectorAll("pre code").forEach((block) => {
+    if (window.hljs) hljs.highlightElement(block);
+  });
+
+  scrollToBottom();
 }
 
 async function init() {
@@ -592,6 +616,13 @@ async function init() {
 
   if (!state.settings.apiKey) {
     openSettings();
+  }
+
+  // 加载自定义背景
+  const bg = await window.deepseekApp.getBackground();
+  if (bg) {
+    document.body.classList.add("has-bg");
+    document.body.style.backgroundImage = `url('${bg}')`;
   }
 }
 

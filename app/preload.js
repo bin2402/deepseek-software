@@ -8,6 +8,7 @@ function on(channel, callback) {
 
 contextBridge.exposeInMainWorld("deepseekApp", {
   getDataDir: () => ipcRenderer.invoke("app:get-data-dir"),
+  getBackground: () => ipcRenderer.invoke("app:get-background"),
   getSettings: () => ipcRenderer.invoke("settings:get"),
   saveSettings: (settings) => ipcRenderer.invoke("settings:save", settings),
   getConversations: () => ipcRenderer.invoke("conversations:get"),
